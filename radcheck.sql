@@ -34,7 +34,7 @@ CREATE TABLE `radcheck` (
   `op` char(2) NOT NULL DEFAULT '==',
   `value` varchar(253) NOT NULL DEFAULT '',
   `status` int NOT NULL DEFAULT '1' COMMENT '1 = active\r\n0 = disabled'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `radcheck`
