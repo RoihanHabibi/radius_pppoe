@@ -14,9 +14,9 @@ class RadcheckController extends Controller
         $status = $request->query('status'); // Mengambil query string 'status'
 
         if ($status == 'enabled') {
-            $radcheck = Radcheck::where('status', 'enabled')->get();
+            $radcheck = Radcheck::where('status', 1)->get();
         } else if ($status == 'disabled') {
-            $radcheck = Radcheck::where('status', 'disabled')->get();
+            $radcheck = Radcheck::where('status', 0)->get();
         } else {
             $radcheck = Radcheck::all(); // Mengambil semua data jika tidak ada filter
         }
@@ -39,7 +39,7 @@ class RadcheckController extends Controller
             'attribute' => 'Cleartext-Password', // Default attribute
             'op' => ':=', // Default operator
             'value' => $request->password,
-            'status' => 'enabled', // Set status default sebagai "enabled"
+            'status' => 1, // Set status default sebagai "enabled"
         ]);
 
         return redirect()->route('radcheck.index')->with('success', 'Pengguna berhasil ditambahkan.');
@@ -97,7 +97,7 @@ class RadcheckController extends Controller
 
         // Nonaktifkan pengguna
         $radcheck->update([
-            'status' => 'disabled',
+            'status' => 0,
         ]);
 
         return response()->json(['message' => 'Data berhasil dihapus.'], 200);
@@ -131,7 +131,7 @@ class RadcheckController extends Controller
         }
 
         // Ubah status menjadi "enabled"
-        $user->status = 'enabled';
+        $user->status = 1;
         $user->save();
 
         return response()->json(['message' => 'Status pengguna diubah menjadi enabled']);

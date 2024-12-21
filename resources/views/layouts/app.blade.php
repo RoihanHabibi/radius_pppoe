@@ -60,7 +60,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ url('radcheck?status=enabled') }}" class="nav-link active">
+                <a href="{{ url('radcheck?status=enabled') }}" class="nav-link">
                   <i class="fas fa-user-check nav-icon"></i>
                   <p>PPoE active</p>
                 </a>
@@ -119,7 +119,35 @@
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{ asset('assets/dist/js/demo.js') }}"></script>
+
+<!-- SweetAlert2 -->
+<script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></scr
+  <!-- Success Message Script -->
+  @if (session('success'))
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: 'Berhasil',
+          text: "{{ session('success') }}",
+          showConfirmButton: false,
+          timer: 3000
+      });
+  </script>
+  @endif
+
+  <!-- Error Message Script -->
+  @if (session('error'))
+  <script>
+      Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: "{{ session('error') }}",
+          showConfirmButton: false,
+          timer: 3000
+      });
+  </script>
+  @endif
+
+@yield('scripts')
 </body>
 </html>

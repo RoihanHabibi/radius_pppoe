@@ -3,9 +3,7 @@
 @section('title', 'Daftar Pengguna PPPoE')
 
 @section('content')
-<div class="container mt-5">
-    <h1 class="mb-4">Daftar Pengguna PPPoE</h1>
-
+<div class="container">
     <!-- Tombol untuk membuka modal -->
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
         Tambah Pengguna Baru
@@ -21,8 +19,6 @@
         </form>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="content-wrapper" style="margin-left: 260px; padding: 20px;">
             <!-- Menampilkan PPPoE Active dan inactive -->
             @if(request()->get('status') == 'enabled')
             <h3>PPPoE Active</h3>
@@ -57,7 +53,7 @@
                                     <input class="form-check-input status-btn" type="checkbox" 
                                            name="status_switch" 
                                            data-id="{{ $user['id'] }}" 
-                                           {{ $user['status'] == 'enabled' ? 'checked' : '' }}>
+                                           {{ $user['status'] == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label"></label>
                                 </div>
                             </td>
@@ -112,7 +108,7 @@
         // Update Status PPPoE
         $('.status-btn').on('change', function () {
             const id = $(this).data('id');
-            const status = $(this).is(':checked') ? 'enabled' : 'disabled';
+            const status = $(this).is(':checked') ? 1 : 0;
 
             $.ajax({
                 url: `/radcheck/${id}/update_status`,
