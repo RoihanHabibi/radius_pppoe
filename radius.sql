@@ -47,7 +47,7 @@ CREATE TABLE `login` (
   `id` int UNSIGNED NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login`
@@ -94,7 +94,7 @@ CREATE TABLE `nas` (
   `server` varchar(64) DEFAULT NULL,
   `community` varchar(50) DEFAULT NULL,
   `description` varchar(200) DEFAULT 'RADIUS Client'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `nas`
@@ -170,7 +170,7 @@ CREATE TABLE `radacct` (
   `framedinterfaceid` varchar(44) NOT NULL DEFAULT '',
   `delegatedipv6prefix` varchar(45) NOT NULL DEFAULT '',
   `class` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -185,7 +185,7 @@ CREATE TABLE `radcheck` (
   `op` char(2) NOT NULL DEFAULT '==',
   `value` varchar(253) NOT NULL DEFAULT '',
   `status` int NOT NULL DEFAULT '1' COMMENT '1 = active\r\n0 = disabled'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `radcheck`
@@ -223,7 +223,7 @@ CREATE TABLE `radgroupcheck` (
   `attribute` varchar(64) NOT NULL DEFAULT '',
   `op` char(2) NOT NULL DEFAULT '==',
   `value` varchar(253) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -237,7 +237,7 @@ CREATE TABLE `radgroupreply` (
   `attribute` varchar(64) NOT NULL DEFAULT '',
   `op` char(2) NOT NULL DEFAULT '=',
   `value` varchar(253) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -252,7 +252,7 @@ CREATE TABLE `radpostauth` (
   `reply` varchar(32) NOT NULL DEFAULT '',
   `authdate` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   `class` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `radpostauth`
@@ -552,7 +552,7 @@ CREATE TABLE `radreply` (
   `attribute` varchar(64) NOT NULL DEFAULT '',
   `op` char(2) NOT NULL DEFAULT '=',
   `value` varchar(253) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -565,7 +565,7 @@ CREATE TABLE `radusergroup` (
   `username` varchar(64) NOT NULL DEFAULT '',
   `groupname` varchar(64) NOT NULL DEFAULT '',
   `priority` int NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `radusergroup`

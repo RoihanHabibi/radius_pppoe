@@ -39,6 +39,6 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login');
     
     // Rute untuk log out
-    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 });

@@ -27,7 +27,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Logout Button -->
       <li class="nav-item">
-      <form method="GET" action="" class="d-inline">
+      <form method="POST" action="{{ route('radcheck.logout') }}" class="d-inline">
       @csrf
           <button type="submit" class="btn btn-danger btn-sm">
             <i class="fas fa-sign-out-alt"></i> Logout
@@ -98,22 +98,6 @@
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
   </ul>
-
-  <!-- Right navbar links -->
-  <ul class="navbar-nav ml-auto">
-    <!-- Logout Button -->
-    <li class="nav-item">
-      <form method="POST" action="{{ route('.logout') }}" class="d-inline">
-        @csrf
-        <button type="submit" class="btn btn-danger btn-sm">
-          <i class="fas fa-sign-out-alt"></i> Log Out
-        </button>
-      </form>
-    </li>
-  </ul>
-</nav>
-<!-- /.navbar -->
-
     <!-- /.sidebar -->
   </aside>
 
@@ -158,7 +142,7 @@
 <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
 
 <!-- SweetAlert2 -->
-<script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></scr
+<script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
   <!-- Success Message Script -->
   @if (session('success'))
   <script>
