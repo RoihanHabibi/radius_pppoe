@@ -38,7 +38,7 @@ class LoginController extends Controller
             // Cek apakah password yang dimasukkan sama dengan password di database
             if (Hash::check($password, $hashedPassword)) {
                 // Jika login berhasil, redirect ke halaman PPPoE aktif
-                return redirect('radcheck?status=enabled');
+                return redirect('radcheck/dashboard');
             } else {
                 // Jika login gagal
                 return back()->with('error', 'Login gagal, periksa password Anda.');

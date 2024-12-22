@@ -5,47 +5,70 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Radcheck;
 
-
 class RadcheckController extends Controller
 {
-    // Menampilkan data pengguna aktif dan tidak aktif berdasarkan pencarian
+    // Menampilkan daftar pengguna dengan filter status
     public function index(Request $request)
     {
-        $status = $request->query('status'); // Mengambil query string 'status'
+        $status = $request->query('status');
+        $radcheck = match ($status) {
+            'enabled' => Radcheck::where('status', 1)->get(),
+            'disabled' => Radcheck::where('status', 0)->get(),
+            default => Radcheck::all(),
+        };
 
-        if ($status == 'enabled') {
-            $radcheck = Radcheck::where('status', 1)->get();
-        } else if ($status == 'disabled') {
-            $radcheck = Radcheck::where('status', 0)->get();
-        } else {
-            $radcheck = Radcheck::all(); // Mengambil semua data jika tidak ada filter
-        }
-
-        return view('radcheck.index', compact('radcheck')); // Mengirim data ke view
+        return view('radcheck.index', compact('radcheck'));
     }
 
-    // Menambahkan pengguna baru
+    // Menampilkan dashboard dengan total pengguna aktif dan tidak aktif
+    public function dashboard()
+    {
+        $totalActive = Radcheck::where('status', 1)->count();
+        $totalInactive = Radcheck::where('status', 0)->count();
+
+        return view('radcheck.dashboard', compact('totalActive', 'totalInactive'));
+    }
+
+    // Halaman pengguna aktif
+    public function active()
+    {
+        $request = Radcheck::where('status', 1)->get();
+        return view('radcheck.active', compact('active'));
+    }
+
+    // Halaman pengguna non-aktif
+    public function inactive()
+    {
+        $request = Radcheck::where('status', 0)->get();
+        return view('radcheck.inactive', compact('inactive'));
+    }
+
+    // Form tambah pengguna
+    public function create()
+    {
+        return view('radcheck.create');
+    }
+
+    // Menyimpan pengguna baru
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'username' => 'required|string|max:255',
-            
+            'password' => 'required|string|max:255',
         ]);
 
-        // Simpan data baru ke tabel radcheck
         Radcheck::create([
             'username' => $request->username,
-            'attribute' => 'Cleartext-Password', // Default attribute
-            'op' => ':=', // Default operator
+            'attribute' => 'Cleartext-Password',
+            'op' => ':=',
             'value' => $request->password,
-            'status' => 1, // Set status default sebagai "enabled"
+            'status' => $request->has('enabled') ? 1 : 0,
         ]);
 
         return redirect()->route('radcheck.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
-    // Mengedit pengguna
+    // Form edit pengguna
     public function edit($id)
     {
         $radcheck = Radcheck::findOrFail($id);
@@ -55,13 +78,13 @@ class RadcheckController extends Controller
     // Memperbarui data pengguna
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $request->validate([
             'username' => 'required|string|max:255',
         ]);
 
         $radcheck = Radcheck::findOrFail($id);
         $radcheck->update([
-            'username' => $validated['username'],
+            'username' => $request->username,
         ]);
 
         return redirect()->route('radcheck.index')->with('success', 'Data pengguna berhasil diperbarui.');
@@ -70,41 +93,27 @@ class RadcheckController extends Controller
     // Memperbarui status pengguna
     public function update_status(Request $request, $id)
     {
-        $status = $request->input('status');
-        $user = Radcheck::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
-        }
-
-        // Perbarui status hanya jika berbeda
-        if ($user->status !== $status) {
-            $user->status = $status;
-            $user->save();
-        }
-
-        return response()->json(['message' => 'Status berhasil diperbarui']);
-    }
-
-    // Menonaktifkan pengguna (mengubah status menjadi disabled)
-    public function destroy($id)
-    {
-        $radcheck = Radcheck::find($id);
-
-        if (!$radcheck) {
-            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
-        }
-
-        // Nonaktifkan pengguna
-        $radcheck->update([
-            'status' => 0,
+        $request->validate([
+            'status' => 'required|in:0,1',
         ]);
 
-        return response()->json(['message' => 'Data berhasil dihapus.'], 200);
+        $radcheck = Radcheck::findOrFail($id);
+        $radcheck->update(['status' => $request->status]);
+
+        return response()->json(['message' => 'Status berhasil diperbarui.']);
+    }
+
+    // Menonaktifkan pengguna
+    public function destroy($id)
+    {
+        $radcheck = Radcheck::findOrFail($id);
+        $radcheck->update(['status' => 0]);
+
+        return response()->json(['message' => 'Pengguna berhasil dinonaktifkan.']);
     }
 
     // Mengubah password pengguna
-    public function change_password($id, Request $request)
+    public function change_password(Request $request, $id)
     {
         $request->validate([
             'old_password' => 'required|string',
@@ -121,39 +130,26 @@ class RadcheckController extends Controller
         return redirect()->route('radcheck.index')->with('error', 'Password lama tidak valid.');
     }
 
-    // Menandai pengguna sebagai "enabled"
+    // Menandai pengguna sebagai enabled
     public function markAsUsed($id)
     {
-        $user = Radcheck::find($id);
+        $radcheck = Radcheck::findOrFail($id);
+        $radcheck->update(['status' => 1]);
 
-        if (!$user) {
-            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
-        }
-
-        // Ubah status menjadi "enabled"
-        $user->status = 1;
-        $user->save();
-
-        return response()->json(['message' => 'Status pengguna diubah menjadi enabled']);
+        return response()->json(['message' => 'Status pengguna diubah menjadi enabled.']);
     }
 
-    // Mencari pengguna berdasarkan query pencarian
+    // Pencarian pengguna
     public function search(Request $request)
     {
+        $request->validate([
+            'query' => 'required|string|max:255',
+        ]);
+
         $query = $request->input('query');
-
-        if (!$query) {
-            return redirect()->route('radcheck.index')->with('error', 'Masukkan kata kunci untuk mencari.');
-        }
-
-        // Cari berdasarkan username atau password
         $radcheck = Radcheck::where('username', 'LIKE', "%{$query}%")
             ->orWhere('value', 'LIKE', "%{$query}%")
             ->get();
-
-        if ($radcheck->isEmpty()) {
-            return redirect()->route('radcheck.index')->with('error', 'Data tidak ditemukan.');
-        }
 
         return view('radcheck.index', compact('radcheck', 'query'));
     }

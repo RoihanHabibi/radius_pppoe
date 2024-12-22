@@ -27,6 +27,9 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::post('{id}/update_status', [RadcheckController::class, 'update_status'])->name('update_status'); // Memperbarui status pengguna
     Route::patch('{id}/used', [RadcheckController::class, 'markAsUsed'])->name('markAsUsed'); // Menandai pengguna sebagai digunakan
     Route::post('{id}/change_password', [RadcheckController::class, 'change_password'])->name('change_password'); // Mengubah password pengguna
+
+    Route::get('/dashboard', [RadcheckController::class, 'dashboard'])->name('dashboard');
+    Route::get('/tambah_user', [RadcheckController::class, 'create'])->name('create_user');
     
     // Rute untuk PPPoE aktif dan tidak aktif
     Route::get('/radcheck/active', [RadcheckController::class, 'active'])->name('radcheck.active'); // Halaman PPPoE aktif

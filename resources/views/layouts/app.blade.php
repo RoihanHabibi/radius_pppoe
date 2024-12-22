@@ -23,18 +23,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
     </ul>
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-      <!-- Logout Button -->
-      <li class="nav-item">
-      <form method="POST" action="{{ route('radcheck.logout') }}" class="d-inline">
-      @csrf
-          <button type="submit" class="btn btn-danger btn-sm">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
-        </form>
-      </li>
-    </ul>
+
   </nav>
   <!-- /.navbar -->
 
@@ -43,7 +32,7 @@
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
       <img src="{{ asset('assets/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Radcheck</span>
+      <span class="brand-text font-weight-light">FreeRADIUS</span>
     </a>
 
     <!-- Sidebar -->
@@ -54,15 +43,28 @@
           <img src="{{ asset('assets/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">Admin</a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
+        <li class="nav-item">
+            <a href="{{ Route('radcheck.dashboard') }}" class="nav-link {{ Request::is('radcheck/dashboard') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <!-- Menu untuk Create User -->
+          <li class="nav-item">
+            <a href="{{ Route('radcheck.create_user') }}" class="nav-link {{ Request::is('radcheck/tambah_user') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-user"></i>
+              <p>Tambah Pengguna</p>
+            </a>
+          </li>
+          <li class="nav-item {{ Request::is('radcheck') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Request::is('radcheck') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user"></i>
               <p>
                 PPoE
@@ -71,13 +73,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ url('radcheck?status=enabled') }}" class="nav-link">
+                <a href="{{ url('radcheck?status=enabled') }}" class="nav-link {{ Request::is('radcheck') && Request::query('status') == 'enabled' ? 'active' : '' }}">
                   <i class="fas fa-user-check nav-icon"></i>
                   <p>PPoE active</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ url('radcheck?status=disabled') }}" class="nav-link">
+                <a href="{{ url('radcheck?status=disabled') }}" class="nav-link {{ Request::is('radcheck') && Request::query('status') == 'disabled' ? 'active' : '' }}">
                   <i class="fas fa-user-times nav-icon"></i>
                   <p>PPoE inactive</p>
                 </a>
@@ -86,18 +88,18 @@
           </li>
         </ul>
       </nav>
-      <!-- /.sidebar-menu -->
+
+      <!-- Logout Button -->
+      <div class="mt-4 pt-4 pb-4">
+        <form method="POST" action="{{ route('radcheck.logout') }}" class="text-center">
+          @csrf
+          <button type="submit" class="btn btn-danger btn-sm">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </form>
+      </div>
+      <!-- /.logout -->
     </div>
-    
-    <!-- button log out -->
-     <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-  <!-- Left navbar links -->
-  <ul class="navbar-nav">
-    <li class="nav-item">
-      <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-    </li>
-  </ul>
     <!-- /.sidebar -->
   </aside>
 
@@ -123,7 +125,7 @@
   <!-- /.content-wrapper -->
 
   <footer class="main-footer">
-    <strong>Copyright 2024</strong> 
+    <strong>FreeRADIUS 2024</strong> 
   </footer>
 
   <!-- Control Sidebar -->
