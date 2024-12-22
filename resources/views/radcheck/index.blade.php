@@ -87,7 +87,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $user['id'] }}</td>
                         <td>{{ $user['username'] }}</td>
-                        <td>{{ $user['tanggal_penggunaan'] }}</td>
+                        <td>{{ \Carbon\Carbon::parse($user['tanggal_penggunaan'])->format('d-m-Y H:i:s') }}</td>
                         <td>{{ $user['unit'] ?? 'Tidak ada' }}</td>
                         <td>
                             <div class="form-check form-switch">

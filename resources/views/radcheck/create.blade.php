@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah User Radcheck')
+@section('title', 'Tambah User')
 
 @section('content')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                 <!-- Card for the form -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Tambah User Radcheck</h3>
+                        <h3 class="card-title">Tambah User FreeRADIUS</h3>
                     </div>
                     <div class="card-body">
                         <!-- Form for adding a user -->
@@ -22,7 +22,10 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" name="password" id="password" class="form-control" required>
+                                    <div class="input-group">
+                                        <input type="text" name="password" id="password" class="form-control" readonly>
+                                        <button type="button" class="btn btn-secondary" id="generatePassword">Generate Password</button>
+                                    </div>
                                 </div>
                                 <div class="mb-3 form-check">
                                     <input class="form-check-input" type="checkbox" id="enabled" name="enabled" value="1">
@@ -35,4 +38,16 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.getElementById('generatePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const randomPassword = Array(12).fill(null).map(() =>
+                String.fromCharCode(Math.floor(Math.random() * (126 - 33 + 1)) + 33)
+            ).join('');
+            passwordField.value = randomPassword;
+        });
+    </script>
 @endsection

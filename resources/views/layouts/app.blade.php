@@ -25,7 +25,13 @@
     </ul>
 
   </nav>
-  <!-- /.navbar -->
+  <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js"></script>
+
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -98,7 +104,6 @@
           </button>
         </form>
       </div>
-      <!-- /.logout -->
     </div>
     <!-- /.sidebar -->
   </aside>
@@ -125,7 +130,7 @@
   <!-- /.content-wrapper -->
 
   <footer class="main-footer">
-    <strong>FreeRADIUS 2024</strong> 
+    <strong>FreeRADIUS</strong> 
   </footer>
 
   <!-- Control Sidebar -->

@@ -44,4 +44,7 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     // Rute untuk log out
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+    Route::post('/radcheck/store-random', [RadcheckController::class, 'RandomPassword'])->name('radcheck.storeRandom');
+
+
 });

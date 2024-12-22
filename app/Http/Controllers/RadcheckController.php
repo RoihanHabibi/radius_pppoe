@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Radcheck;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class RadcheckController extends Controller
 {
@@ -16,7 +18,7 @@ class RadcheckController extends Controller
             'disabled' => Radcheck::where('status', 0)->get(),
             default => Radcheck::all(),
         };
-
+        
         return view('radcheck.index', compact('radcheck'));
     }
 
@@ -25,21 +27,22 @@ class RadcheckController extends Controller
     {
         $totalActive = Radcheck::where('status', 1)->count();
         $totalInactive = Radcheck::where('status', 0)->count();
-
-        return view('radcheck.dashboard', compact('totalActive', 'totalInactive'));
+        
+        $recentUsers = Radcheck::orderBy('tanggal_penggunaan', 'desc')->limit(5)->get(); // Sesuaikan limit jika perlu
+        return view('radcheck.dashboard', compact('totalActive', 'totalInactive', 'recentUsers'));
     }
 
     // Halaman pengguna aktif
     public function active()
     {
-        $request = Radcheck::where('status', 1)->get();
+        $active = Radcheck::where('status', 1)->get();
         return view('radcheck.active', compact('active'));
     }
 
     // Halaman pengguna non-aktif
     public function inactive()
     {
-        $request = Radcheck::where('status', 0)->get();
+        $inactive = Radcheck::where('status', 0)->get();
         return view('radcheck.inactive', compact('inactive'));
     }
 
@@ -65,7 +68,7 @@ class RadcheckController extends Controller
             'status' => $request->has('enabled') ? 1 : 0,
         ]);
 
-        return redirect()->route('radcheck.index')->with('success', 'Pengguna berhasil ditambahkan.');
+        return redirect()->route('radcheck.dashboard')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     // Form edit pengguna
@@ -101,6 +104,8 @@ class RadcheckController extends Controller
         $radcheck->update(['status' => $request->status]);
 
         return response()->json(['message' => 'Status berhasil diperbarui.']);
+
+        
     }
 
     // Menonaktifkan pengguna
@@ -152,5 +157,30 @@ class RadcheckController extends Controller
             ->get();
 
         return view('radcheck.index', compact('radcheck', 'query'));
+    }
+
+    public function generateRandomPassword($length = 12)
+    {
+        return Str::random($length);
+    }
+
+    // Menyimpan pengguna baru dengan password acak
+    public function RandomPassword(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+        ]);
+
+        $randomPassword = $this->generateRandomPassword();
+
+        Radcheck::create([
+            'username' => $request->username,
+            'attribute' => 'Cleartext-Password',
+            'op' => ':=',
+            'value' => $randomPassword,
+            'status' => $request->has('enabled') ? 1 : 0,
+        ]);
+
+        return redirect()->route('radcheck.dashboard')->with('success', "Pengguna berhasil ditambahkan dengan password: $randomPassword");
     }
 }
