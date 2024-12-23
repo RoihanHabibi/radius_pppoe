@@ -104,8 +104,6 @@ class RadcheckController extends Controller
         $radcheck->update(['status' => $request->status]);
 
         return response()->json(['message' => 'Status berhasil diperbarui.']);
-
-        
     }
 
     // Menonaktifkan pengguna
@@ -183,4 +181,5 @@ class RadcheckController extends Controller
 
         return redirect()->route('radcheck.dashboard')->with('success', "Pengguna berhasil ditambahkan dengan password: $randomPassword");
     }
+
 }

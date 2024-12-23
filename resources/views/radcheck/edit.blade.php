@@ -55,7 +55,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="new_password" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                            <button type="button" class="btn btn-outline-secondary" id="generatePassword">Generate</button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -67,6 +70,18 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+    document.getElementById('generatePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('new_password');
+        const randomPassword = Array(12).fill(null).map(() =>
+            String.fromCharCode(Math.floor(Math.random() * (126 - 33 + 1)) + 33)
+        ).join('');
+        passwordField.value = randomPassword;
+    });
+</script>
 @endsection
 
 <!-- Include Bootstrap JS if not already included -->

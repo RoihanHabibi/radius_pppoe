@@ -60,7 +60,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $user['id'] }}</td>
                                 <td>{{ $user['username'] }}</td>
-                                <td>{{ \Carbon\Carbon::parse($user->tanggal_penggunaan)->format('d-m-Y H:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($user->tanggal_penggunaan)->format('d-mY H:i') }}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -50,7 +50,7 @@
         <form action="{{ route('radcheck.search') }}" method="GET">
             <div class="input-group">
                 <input type="text" name="query" id="searchInput" placeholder="Cari username..." class="form-control" value="{{ old('query') }}">
-                <button type="submit" class="btn btn-primary">Cari</button>
+                <button type="submit" class="btn btn-info btn-flat">Cari</button>
             </div>
         </form>
     </div>
@@ -87,7 +87,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $user['id'] }}</td>
                         <td>{{ $user['username'] }}</td>
-                        <td>{{ \Carbon\Carbon::parse($user['tanggal_penggunaan'])->format('d-m-Y H:i:s') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($user['tanggal_penggunaan'])->format('d/m/Y H:i') }}</td>
                         <td>{{ $user['unit'] ?? 'Tidak ada' }}</td>
                         <td>
                             <div class="form-check form-switch">
@@ -162,17 +162,5 @@
             });
         });
     });
-</script>
-
-<script>
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@elseif(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
 </script>
 @endsection

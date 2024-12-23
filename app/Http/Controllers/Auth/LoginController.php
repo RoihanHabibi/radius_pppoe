@@ -57,5 +57,5 @@ class LoginController extends Controller
 
         return redirect('radcheck/login')->with('status', 'Anda telah logout.');
     }
-
+    
 }

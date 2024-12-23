@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RadcheckController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Radcheck;
 
 Route::prefix('radcheck')->name('radcheck.')->group(function () {
     // Rute utama Radcheck
@@ -44,7 +45,12 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     // Rute untuk log out
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::post('/radcheck/store-random', [RadcheckController::class, 'RandomPassword'])->name('radcheck.storeRandom');
+    
+    //menampilkan pengguna user login
+    Route::get('radcheck/biodata', [LoginController::class, 'ShowBiodata'])->middleware('auth')->name('radcheck.biodata');
 
+
+    Route::post('/radcheck/store-random', [RadcheckController::class, 'RandomPassword'])->name('radcheck.storeRandom');
+    
 
 });
