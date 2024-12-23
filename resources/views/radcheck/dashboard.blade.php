@@ -10,9 +10,7 @@
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ $totalActive }}</h3>
-
                         <p>Total Users Active</p>
-                    
                         <div class="icon">
                             <i class="fas fa-user-check"></i>
                         </div>
@@ -26,7 +24,6 @@
                 <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ $totalInactive }}</h3>
-
                         <p>Total Users Inactive</p>
                     </div>
                     <div class="icon">
@@ -60,7 +57,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $user['id'] }}</td>
                                 <td>{{ $user['username'] }}</td>
-                                <td>{{ \Carbon\Carbon::parse($user->tanggal_penggunaan)->format('d-mY H:i') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($user->tanggal_penggunaan)->format('d-m-Y H:i') }}</td>
                             </tr>
                         @endforeach
                     </tbody>

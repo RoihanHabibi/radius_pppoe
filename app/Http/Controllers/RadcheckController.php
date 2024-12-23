@@ -28,7 +28,7 @@ class RadcheckController extends Controller
         $totalActive = Radcheck::where('status', 1)->count();
         $totalInactive = Radcheck::where('status', 0)->count();
         
-        $recentUsers = Radcheck::orderBy('tanggal_penggunaan', 'desc')->limit(5)->get(); // Sesuaikan limit jika perlu
+        $recentUsers = Radcheck::orderBy('tanggal_penggunaan', 'desc')->limit(7)->get(); // Sesuaikan limit jika perlu
         return view('radcheck.dashboard', compact('totalActive', 'totalInactive', 'recentUsers'));
     }
 
@@ -52,24 +52,26 @@ class RadcheckController extends Controller
         return view('radcheck.create');
     }
 
-    // Menyimpan pengguna baru
     public function store(Request $request)
     {
         $request->validate([
             'username' => 'required|string|max:255',
             'password' => 'required|string|max:255',
         ]);
-
+    
+        // Simpan pengguna baru
         Radcheck::create([
             'username' => $request->username,
             'attribute' => 'Cleartext-Password',
             'op' => ':=',
             'value' => $request->password,
             'status' => $request->has('enabled') ? 1 : 0,
+            'tanggal_penggunaan' => now(),  // Menyimpan waktu sekarang
         ]);
-
+    
         return redirect()->route('radcheck.dashboard')->with('success', 'Pengguna berhasil ditambahkan.');
     }
+    
 
     // Form edit pengguna
     public function edit($id)
@@ -93,18 +95,35 @@ class RadcheckController extends Controller
         return redirect()->route('radcheck.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    // Memperbarui status pengguna
     public function update_status(Request $request, $id)
     {
+        // Validasi input
         $request->validate([
             'status' => 'required|in:0,1',
         ]);
 
+        // Temukan pengguna berdasarkan ID
         $radcheck = Radcheck::findOrFail($id);
+
+        // Perbarui status
         $radcheck->update(['status' => $request->status]);
 
-        return response()->json(['message' => 'Status berhasil diperbarui.']);
+        // Jika status adalah 'disabled' (0), ganti password
+        if ($request->status == 0) {
+
+            // Gunakan string random password dengan maksimal 5 huruf
+            $hashedPassword = Str::random(5);
+
+            // Update password pengguna
+            $radcheck->update(['value' => $hashedPassword]);
+
+            // (Opsional) Kirim password baru ke pengguna melalui notifikasi atau email
+            // Mail::to($radcheck->email)->send(new PasswordUpdated($newPassword));
+        }
+
+        return response()->json(['message' => 'Status berhasil diperbarui dan password diperbarui jika status adalah disabled.']);
     }
+
 
     // Menonaktifkan pengguna
     public function destroy($id)

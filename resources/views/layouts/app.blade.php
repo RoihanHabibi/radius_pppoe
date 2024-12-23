@@ -27,7 +27,6 @@
                 </li>
             </ul>
         </nav>
-
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <div class="sidebar">
@@ -40,7 +39,7 @@
                         @auth
                         <a href="{{ url('radcheck/biodata') }}" class="d-block">{{ Auth::user()->$username }}</a>
                         @else
-                        <a href="{{ url('radcheck/biodata') }}" class="d-block">Admin</a>
+                        <a href="{{ url('radcheck/biodata') }}" class="d-block">FreeRADIUS</a>
                         @endauth
                     </div>
                 </div>
