@@ -14,6 +14,7 @@ class RadcheckController extends Controller
     public function index(Request $request)
     {
         $status = $request->query('status');
+        
         $radcheck = match ($status) {
             'enabled' => Radcheck::where('status', 1)->get(),
             'disabled' => Radcheck::where('status', 0)->get(),

@@ -55,15 +55,7 @@
                             </a>
                         </li>
 
-                        <!-- Menu for Create User -->
-                        <li class="nav-item">
-                            <a href="{{ Route('radcheck.create_user') }}" class="nav-link {{ Request::is('radcheck/tambah_user') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user-plus"></i>
-                                <p>Tambah Pengguna</p>
-                            </a>
-                        </li>
-
-                        <!-- PPoE Menu -->
+                        <!-- PPPoE Menu -->
                         <li class="nav-item {{ Request::is('radcheck') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('radcheck') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-user"></i>
@@ -74,15 +66,21 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
+                                    <a href="{{ Route('radcheck.create_user') }}" class="nav-link {{ Request::is('radcheck/tambah_user') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-user-plus"></i>
+                                        <p>Tambah Pengguna</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ url('radcheck?status=enabled') }}" class="nav-link {{ Request::is('radcheck') && Request::query('status') == 'enabled' ? 'active' : '' }}">
                                         <i class="fas fa-user-check nav-icon"></i>
-                                        <p>PPPoE active</p>
+                                        <p>PPPoE Active</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ url('radcheck?status=disabled') }}" class="nav-link {{ Request::is('radcheck') && Request::query('status') == 'disabled' ? 'active' : '' }}">
                                         <i class="fas fa-user-times nav-icon"></i>
-                                        <p>PPPoE inactive</p>
+                                        <p>PPPoE Inactive</p>
                                     </a>
                                 </li>
                             </ul>

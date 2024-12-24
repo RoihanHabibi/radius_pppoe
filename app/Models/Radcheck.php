@@ -17,6 +17,7 @@ class Radcheck extends Model
         'attribute',
         'op',
         'value',
+        'tanggal_penggunaan',
         'status',
     ];
 }
