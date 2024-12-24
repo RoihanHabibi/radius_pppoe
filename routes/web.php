@@ -45,12 +45,21 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     // Rute untuk log out
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    
-    //menampilkan pengguna user login
+    // Menampilkan pengguna user login
     Route::get('radcheck/biodata', [LoginController::class, 'ShowBiodata'])->middleware('auth')->name('radcheck.biodata');
 
-
+    // Random password
     Route::post('/radcheck/store-random', [RadcheckController::class, 'RandomPassword'])->name('radcheck.storeRandom');
-    
 
+    // Rute baru: Disable user
+    Route::patch('{id}/disable', [RadcheckController::class, 'disableUser'])->name('disable'); // Menonaktifkan pengguna
+
+    // Route untuk menampilkan data tambahan dari database kedua
+    Route::get('/radcheck/additional', [RadcheckController::class, 'getAdditionalData'])->name('radcheck.additional');
+
+    // Route untuk menampilkan data gabungan dari database utama dan kedua
+    Route::get('/radcheck/combined', [RadcheckController::class, 'combineUserData'])->name('radcheck.combined');
+
+    // Route untuk menyimpan data ke database kedua
+    Route::post('/radcheck/store-secondary', [RadcheckController::class, 'storeToSecondary'])->name('radcheck.store.secondary');
 });

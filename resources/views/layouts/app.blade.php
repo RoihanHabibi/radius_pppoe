@@ -33,13 +33,13 @@
                 <!-- Sidebar user (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('assets/dist/img/AdminLTELogo.png') }}" class="img-circle elevation-2" alt="User Image">
+                        <img src="{{ asset('assets/dist/img/wifi.jpg') }}" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         @auth
                         <a href="{{ url('radcheck/biodata') }}" class="d-block">{{ Auth::user()->$username }}</a>
                         @else
-                        <a href="{{ url('radcheck/biodata') }}" class="d-block">FreeRADIUS</a>
+                        <a href="#" class="d-block">FreeRADIUS</a>
                         @endauth
                     </div>
                 </div>

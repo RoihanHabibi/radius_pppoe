@@ -17,15 +17,14 @@
 </head>
 <body>
     <div class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="../../index2.html"><b>Login Page</a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
-
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="../../index2.html" class="h1"><b>Free</b>RADIUS</a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Sign in to start your session</p>
       <form action="{{ route('radcheck.login') }}" method="post">
       @csrf
         <div class="input-group mb-3">

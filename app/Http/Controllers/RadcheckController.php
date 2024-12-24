@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Radcheck;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class RadcheckController extends Controller
 {
@@ -66,7 +67,7 @@ class RadcheckController extends Controller
             'op' => ':=',
             'value' => $request->password,
             'status' => $request->has('enabled') ? 1 : 0,
-            'tanggal_penggunaan' => now(),  // Menyimpan waktu sekarang
+            'tanggal_penggunaan' => Carbon::now(), // Menggunakan zona waktu Jakarta
         ]);
     
         return redirect()->route('radcheck.dashboard')->with('success', 'Pengguna berhasil ditambahkan.');
@@ -126,16 +127,21 @@ class RadcheckController extends Controller
 
 
     // Menonaktifkan pengguna
-    public function destroy($id)
+    public function disableUser($id)
     {
         $radcheck = Radcheck::findOrFail($id);
-        $radcheck->update(['status' => 0]);
+
+        // Perbarui status menjadi 0 (dinonaktifkan) dan ubah password ke string acak
+        $radcheck->update([
+            'status' => 0,
+            'value' => bcrypt(str::random(5)) // Ganti password dengan acak
+        ]);
 
         return response()->json(['message' => 'Pengguna berhasil dinonaktifkan.']);
     }
 
     // Mengubah password pengguna
-    public function change_password(Request $request, $id)
+    public function changePassword(Request $request, $id)
     {
         $request->validate([
             'old_password' => 'required|string',
@@ -144,12 +150,24 @@ class RadcheckController extends Controller
 
         $radcheck = Radcheck::findOrFail($id);
 
-        if ($radcheck->value === $request->old_password) {
-            $radcheck->update(['value' => $request->new_password]);
+        // Validasi apakah password lama sesuai
+        if (password_verify($request->old_password, $radcheck->value)) {
+            $radcheck->update(['value' => bcrypt($request->new_password)]); // Hash password baru
             return redirect()->route('radcheck.index')->with('success', 'Password berhasil diperbarui.');
         }
 
         return redirect()->route('radcheck.index')->with('error', 'Password lama tidak valid.');
+    }
+
+    // Mengaktifkan kembali pengguna (opsional jika dibutuhkan)
+    public function enableUser($id)
+    {
+        $radcheck = Radcheck::findOrFail($id);
+
+        // Perbarui status menjadi 1 (aktif)
+        $radcheck->update(['status' => 1]);
+
+        return response()->json(['message' => 'Pengguna berhasil diaktifkan kembali.']);
     }
 
     // Menandai pengguna sebagai enabled
@@ -176,29 +194,90 @@ class RadcheckController extends Controller
         return view('radcheck.index', compact('radcheck', 'query'));
     }
 
-    public function generateRandomPassword($length = 12)
-    {
-        return Str::random($length);
-    }
+     // Fungsi untuk menghasilkan password acak dengan panjang 5 karakter
+     public function generateRandomPassword($length = 5)
+     {
+         return Str::random($length); // Menghasilkan password acak dengan panjang yang ditentukan
+     }
+ 
+     // Menyimpan pengguna baru dengan password acak
+     public function RandomPassword(Request $request)
+     {
+         // Validasi input username
+         $request->validate([
+             'username' => 'required|string|max:255',
+         ]);
+ 
+         // Membuat password acak dengan panjang 5 karakter
+         $randomPassword = $this->generateRandomPassword(5); // Maksimal 5 karakter
+ 
+         // Menambahkan pengguna baru ke tabel radcheck
+         Radcheck::create([
+             'username' => $request->username,
+             'attribute' => 'Cleartext-Password',
+             'op' => ':=',
+             'value' => $randomPassword,
+             'status' => $request->has('enabled') ? 1 : 0, // Status pengguna aktif/tidak
+         ]);
+ 
+         // Redirect kembali ke dashboard dengan pesan sukses
+         return redirect()->route('radcheck.dashboard')
+             ->with('success', "Pengguna berhasil ditambahkan dengan password: $randomPassword");
+     }
 
-    // Menyimpan pengguna baru dengan password acak
-    public function RandomPassword(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255',
-        ]);
+     // Metode untuk menghapus pengguna
+     public function destroy($id)
+     {
+         // Mencari pengguna berdasarkan ID
+         $user = Radcheck::find($id);
+     
+         // Mengecek apakah pengguna ditemukan
+         if ($user) {
+             // Menonaktifkan pengguna dengan mengubah status menjadi 0
+             $user->status = 0;
+             $user->save(); // Simpan perubahan status
+     
+             // Mengirimkan respons sukses
+             return response()->json(['message' => 'Pengguna berhasil dinonaktifkan'], 200);
+         }
+     
+         // Jika pengguna tidak ditemukan, kirimkan respons error
+         return response()->json(['error' => 'Pengguna tidak ditemukan'], 404);
+     }
 
-        $randomPassword = $this->generateRandomPassword();
-
-        Radcheck::create([
-            'username' => $request->username,
-            'attribute' => 'Cleartext-Password',
-            'op' => ':=',
-            'value' => $randomPassword,
-            'status' => $request->has('enabled') ? 1 : 0,
-        ]);
-
-        return redirect()->route('radcheck.dashboard')->with('success', "Pengguna berhasil ditambahkan dengan password: $randomPassword");
-    }
+     public function getAdditionalData()
+     {
+         // Mengambil data dari koneksi kedua
+         $additionalData = DB::connection('mysql_secondary')->table('users')
+             ->select('id', 'username', 'phone', 'address')
+             ->get();
+ 
+         return view('radcheck.additional', compact('additionalData'));
+     }
+ 
+     public function combineUserData()
+     {
+         // Data dari database utama
+         $mainData = DB::table('radcheck')->get();
+ 
+         // Data dari database kedua
+         $secondaryData = DB::connection('mysql_secondary')->table('users')->get();
+ 
+         // Menggabungkan data
+         $combinedData = $mainData->map(function ($user) use ($secondaryData) {
+             $secondaryUser = $secondaryData->firstWhere('username', $user->username);
+ 
+             return [
+                 'id' => $user->id,
+                 'username' => $user->username,
+                 'status' => $user->status,
+                 'phone' => $secondaryUser->phone ?? null,
+                 'address' => $secondaryUser->address ?? null,
+             ];
+         });
+ 
+         return view('radcheck.combined', compact('combinedData'));
+     }
+     
 
 }
