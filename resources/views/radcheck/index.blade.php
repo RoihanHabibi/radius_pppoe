@@ -68,7 +68,6 @@
 
     <!-- Tabel Daftar Pengguna -->
     <div class="card">
-        <div class="card-body">
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -90,12 +89,11 @@
                         <td>{{ \Carbon\Carbon::parse($user['tanggal_penggunaan'])->format('d/m/Y H:i') }}</td>
                         <td>{{ $user['unit'] ?? 'Tidak ada' }}</td>
                         <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input status-btn" type="checkbox" 
-                                       name="status_switch" 
-                                       data-id="{{ $user['id'] }}" 
-                                       {{ $user['status'] == 1 ? 'checked' : '' }}>
-                            </div>
+                        <button class="btn {{ $user['status'] == 1 ? 'btn-success' : 'btn-danger' }} btn-sm status-btn" 
+                            data-id="{{ $user['id'] }}" disabled>
+                            {{ $user['status'] == 1 ? 'Active' : 'Inactive' }}
+                        </button>
+                        </td>
                         </td>
                         <td>
                             <a href="{{ route('radcheck.edit', $user['id']) }}" class="btn btn-warning btn-sm">
@@ -120,18 +118,28 @@
         const csrfToken = '{{ csrf_token() }}';
 
         // Update Status PPPoE
-        $('.status-btn').on('change', function () {
+        $('.status-btn').on('click', function () {
             const id = $(this).data('id');
-            const status = $(this).is(':checked') ? 1 : 0;
+            const button = $(this);
+            const currentStatus = button.hasClass('btn-success') ? 1 : 0;
+
+            // Toggle status
+            const newStatus = currentStatus === 1 ? 0 : 1;
 
             $.ajax({
                 url: `/radcheck/${id}/update_status`,
                 type: 'POST',
                 data: {
                     _token: csrfToken,
-                    status: status
+                    status: newStatus
                 },
                 success: function (response) {
+                    // Update button appearance
+                    if (newStatus === 1) {
+                        button.removeClass('btn-danger').addClass('btn-success').text('Active');
+                    } else {
+                        button.removeClass('btn-success').addClass('btn-danger').text('Inactive');
+                    }
                     Swal.fire('Success', 'Status updated successfully', 'success');
                 },
                 error: function (xhr) {
@@ -163,6 +171,7 @@
         });
     });
 </script>
+
 
 @endsection
     

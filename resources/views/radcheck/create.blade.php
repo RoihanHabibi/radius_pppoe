@@ -44,7 +44,7 @@
     <script>
         document.getElementById('generatePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
-            const randomPassword = Array(12).fill(null).map(() =>
+            const randomPassword = Array(6).fill(null).map(() =>
                 String.fromCharCode(Math.floor(Math.random() * (126 - 33 + 1)) + 33)
             ).join('');
             passwordField.value = randomPassword;

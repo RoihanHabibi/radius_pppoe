@@ -79,8 +79,11 @@ class RadcheckController extends Controller
     public function edit($id)
     {
         $radcheck = Radcheck::findOrFail($id);
-        return view('radcheck.edit', compact('radcheck'));
+        $status = (int)$radcheck->status; // Pastikan status menjadi integer
+        return view('radcheck.edit', compact('radcheck', 'status'));
     }
+
+
 
     // Memperbarui data pengguna
     public function update(Request $request, $id)
@@ -142,23 +145,20 @@ class RadcheckController extends Controller
     }
 
     // Mengubah password pengguna
-    public function changePassword(Request $request, $id)
+    public function change_password(Request $request, $id)
     {
-        $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|min:6',
+        $validated = $request->validate([
+            'new_password' => 'required|min:5',
         ]);
 
         $radcheck = Radcheck::findOrFail($id);
+        $radcheck->value = $request->new_password;  // Simpan password baru
+        $radcheck->save();
 
-        // Validasi apakah password lama sesuai
-        if (password_verify($request->old_password, $radcheck->value)) {
-            $radcheck->update(['value' => bcrypt($request->new_password)]); // Hash password baru
-            return redirect()->route('radcheck.index')->with('success', 'Password berhasil diperbarui.');
-        }
-
-        return redirect()->route('radcheck.index')->with('error', 'Password lama tidak valid.');
+        // Redirect ke halaman edit dengan pesan sukses
+        return redirect()->route('radcheck.edit', $radcheck->id)->with('success', 'Password updated successfully.');
     }
+
 
     // Mengaktifkan kembali pengguna (opsional jika dibutuhkan)
     public function enableUser($id)
