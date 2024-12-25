@@ -30,7 +30,7 @@
                         </div>
                         <div class="mb-3 form-check">
                             <input class="form-check-input status-btn" type="checkbox" data-id="{{ $radcheck->id }}" name="enabled" value="1" {{ $radcheck->status == 1 ? 'checked' : '' }}>
-                            <label class="form-check-label" for="enabled">Aktifkan Pengguna</label>
+                            <label class="form-check-label" for="enabled">Status</label>
                         </div>
                         <div class="form-group">
                             <a href="/radcheck" class="btn btn-secondary">Back</a>
