@@ -85,6 +85,32 @@
                                 </li>
                             </ul>
                         </li>
+                        <!-- Administrator Menu -->
+                        <li class="nav-item {{ Request::is('administrator') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('administrator') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Administrator
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <!-- List Administrator Active -->
+                                <li class="nav-item">
+                                    <a href="{{ route('radcheck.active') }}" class="nav-link {{ Request::is('administrator') && Request::query('status') == 'active' ? 'active' : '' }}">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <p>List Administrator</p>
+                                    </a>
+                                </li>
+                                <!-- Add Administrator -->
+                                <li class="nav-item">
+                                    <a href="{{ route('radcheck.admin') }}" class="nav-link {{ Request::is('admin/create') ? 'active' : '' }}">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <p>Add Administrator</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
 

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RadcheckController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AdminController;
 use App\Models\Radcheck;
 
 Route::prefix('radcheck')->name('radcheck.')->group(function () {
@@ -33,8 +34,8 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::get('/tambah_user', [RadcheckController::class, 'create'])->name('create_user');
     
     // Rute untuk PPPoE aktif dan tidak aktif
-    Route::get('/radcheck/active', [RadcheckController::class, 'active'])->name('radcheck.active'); // Halaman PPPoE aktif
-    Route::get('/radcheck/inactive', [RadcheckController::class, 'inactive'])->name('radcheck.inactive'); // Halaman PPPoE non-aktif
+    Route::get('/active', [RadcheckController::class, 'active'])->name('active'); // Halaman PPPoE aktif
+    Route::get('/inactive', [RadcheckController::class, 'inactive'])->name('inactive'); // Halaman PPPoE non-aktif
 
     // Rute untuk menampilkan form login
     Route::get('/login', [LoginController::class, 'formlogin'])->name('login_form');
@@ -46,20 +47,31 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Menampilkan pengguna user login
-    Route::get('radcheck/biodata', [LoginController::class, 'ShowBiodata'])->middleware('auth')->name('radcheck.biodata');
+    Route::get('/biodata', [LoginController::class, 'ShowBiodata'])->middleware('auth')->name('biodata');
 
     // Random password
-    Route::post('/radcheck/store-random', [RadcheckController::class, 'RandomPassword'])->name('radcheck.storeRandom');
+    Route::post('/store-random', [RadcheckController::class, 'RandomPassword'])->name('storeRandom');
 
     // Rute baru: Disable user
     Route::patch('{id}/disable', [RadcheckController::class, 'disableUser'])->name('disable'); // Menonaktifkan pengguna
 
     // Route untuk menampilkan data tambahan dari database kedua
-    Route::get('/radcheck/additional', [RadcheckController::class, 'getAdditionalData'])->name('radcheck.additional');
+    Route::get('/additional', [RadcheckController::class, 'getAdditionalData'])->name('additional');
 
     // Route untuk menampilkan data gabungan dari database utama dan kedua
-    Route::get('/radcheck/combined', [RadcheckController::class, 'combineUserData'])->name('radcheck.combined');
+    Route::get('/combined', [RadcheckController::class, 'combineUserData'])->name('combined');
 
     // Route untuk menyimpan data ke database kedua
-    Route::post('/radcheck/store-secondary', [RadcheckController::class, 'storeToSecondary'])->name('radcheck.store.secondary');
+    Route::post('/store-secondary', [RadcheckController::class, 'storeToSecondary'])->name('store.secondary');
+
+    // Route untuk menampilkan admin aktif
+    Route::get('/active', [AdminController::class, 'active'])->name('active'); // Menampilkan admin yang aktif
+
+    // Route lainnya
+    Route::get('/admin', [AdminController::class, 'create'])->name('admin'); // Form untuk create admin
+    Route::post('/admin', [AdminController::class, 'store'])->name('admin.store'); // Menyimpan admin baru
+
+    Route::get('/radcheck/editadmin/{id}', [AdminController::class, 'editPassword'])->name('admin.edit_password');
+    Route::post('/radcheck/editadmin/{id}/change-password', [AdminController::class, 'changePassword'])->name('admin.change_password');
+
 });

@@ -87,7 +87,7 @@
                         <td>{{ $user['id'] }}</td>
                         <td>{{ $user['username'] }}</td>
                         <td>{{ \Carbon\Carbon::parse($user['tanggal_penggunaan'])->format('d/m/Y H:i') }}</td>
-                        <td>{{ $user['unit'] ?? 'Tidak ada' }}</td>
+                        <td>{{ $user['unit'] ?? '' }}</td>
                         <td>
                         <button class="btn {{ $user['status'] == 1 ? 'btn-success' : 'btn-danger' }} btn-sm status-btn" 
                             data-id="{{ $user['id'] }}" disabled>

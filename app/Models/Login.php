@@ -16,5 +16,6 @@ class Login extends Model
         'id',
         'username',
         'password',
+        'status',
     ];
 }
