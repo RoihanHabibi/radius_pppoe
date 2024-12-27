@@ -83,47 +83,65 @@ class RadcheckController extends Controller
 
     // Memperbarui data pengguna
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255',
-        ]);
+{
+    $radcheck = Radcheck::findOrFail($id);
 
-        $radcheck = Radcheck::findOrFail($id);
-        $radcheck->update([
-            'username' => $request->username,
-        ]);
+    // Update status berdasarkan input 'enabled'
+    $radcheck->status = $request->input('enabled', 0); // default ke 0 jika tidak ada input
+    $radcheck->save();
 
-        return redirect()->route('radcheck.index')->with('success', 'Data pengguna berhasil diperbarui.');
-    }
+    return redirect()->route('radcheck.index')->with('success', 'User updated successfully');
+}
+
 
     public function update_status(Request $request, $id)
+{
+    // Temukan radcheck berdasarkan ID
+    $radcheck = Radcheck::findOrFail($id);
+
+    // Validasi data yang diterima
+    $validated = $request->validate([
+        'new_password' => 'nullable|string|min:6|max:6',
+        'enabled' => 'nullable|boolean',
+    ]);
+
+    // Perbarui password jika diberikan
+    if (!empty($validated['new_password'])) {
+        $radcheck->value = $validated['new_password'];
+    }
+
+    // Perbarui status berdasarkan data yang diterima
+    $radcheck->status = isset($validated['enabled']) ? $validated['enabled'] : 0;
+
+    // Simpan perubahan
+    $radcheck->save();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->route('radcheck.index')->with('success', 'Status updated successfully.');
+}
+
+    
+
+
+    public function changePassword(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
-            'status' => 'required|in:0,1',
+            'new_password' => 'required|string|min:6',
         ]);
 
-        // Temukan pengguna berdasarkan ID
         $radcheck = Radcheck::findOrFail($id);
 
-        // Perbarui status
-        $radcheck->update(['status' => $request->status]);
+        // Update password langsung
+        $radcheck->update(['value' => $request->new_password]);
 
-        // Jika status adalah 'disabled' (0), ganti password
-        if ($request->status == 0) {
-
-            // Gunakan string random password dengan maksimal 5 huruf
-            $hashedPassword = Str::random(5);
-
-            // Update password pengguna
-            $radcheck->update(['value' => $hashedPassword]);
-
-            // (Opsional) Kirim password baru ke pengguna melalui notifikasi atau email
-            // Mail::to($radcheck->email)->send(new PasswordUpdated($newPassword));
-        }
-
-        return response()->json(['message' => 'Status berhasil diperbarui dan password diperbarui jika status adalah disabled.']);
+        // Tambahkan session untuk mengaktifkan status checkbox
+        return redirect()->route('radcheck.edit', $id)->with([
+            'success' => 'Password berhasil diperbarui',
+            'password_changed' => true,
+        ]);
     }
+
+
 
 
     // Menonaktifkan pengguna
@@ -140,35 +158,9 @@ class RadcheckController extends Controller
         return response()->json(['message' => 'Pengguna berhasil dinonaktifkan.']);
     }
 
-    // Mengubah password pengguna
-    public function changePassword(Request $request, $id)
-    {
-        $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|min:6',
-        ]);
+    
 
-        $radcheck = Radcheck::findOrFail($id);
-
-        // Validasi apakah password lama sesuai
-        if (password_verify($request->old_password, $radcheck->value)) {
-            $radcheck->update(['value' => bcrypt($request->new_password)]); // Hash password baru
-            return redirect()->route('radcheck.index')->with('success', 'Password berhasil diperbarui.');
-        }
-
-        return redirect()->route('radcheck.index')->with('error', 'Password lama tidak valid.');
-    }
-
-    // Mengaktifkan kembali pengguna (opsional jika dibutuhkan)
-    public function enableUser($id)
-    {
-        $radcheck = Radcheck::findOrFail($id);
-
-        // Perbarui status menjadi 1 (aktif)
-        $radcheck->update(['status' => 1]);
-
-        return response()->json(['message' => 'Pengguna berhasil diaktifkan kembali.']);
-    }
+    
 
     // Menandai pengguna sebagai enabled
     public function markAsUsed($id)

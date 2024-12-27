@@ -1,63 +1,115 @@
 @extends('layouts.app')
 
-@section('title', 'Change Password')
+@section('title', 'Ubah Admin')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <h3 class="mb-4">Change Password for {{ $admin->username }}</h3>
-            
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Admin</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Display success message if available -->
+                        @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
 
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                        <!-- Display validation errors if any -->
+                        @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-            <form action="{{ route('admin.change_password', ['id' => $admin->id]) }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label for="new_password" class="form-label">New Password</label>
-                    <input type="password" name="new_password" class="form-control" id="new_password" required>
-                </div>
+                        <!-- Form for editing an administrator -->
+                        <form action="{{ route('radcheck.update-admin', $admin->id) }}" method="POST">
+                            @csrf
+                            @method('PUT') <!-- Use PUT method for updating data -->
+                            
+                            <!-- Username Field -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" name="username" id="username" class="form-control" value="{{ old('username', $admin->username) }}" required>
+                                @error('username')
+                                    <div class="text-danger text-sm">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                <div class="mb-3">
-                    <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
-                    <input type="password" name="new_password_confirmation" class="form-control" id="new_password_confirmation" required>
-                </div>
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password Baru</label>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('password')
+                                    <div class="text-danger text-sm">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                <button type="submit" class="btn btn-primary">Update Password</button>
-                <a href="{{ route('radcheck.admin') }}" class="btn btn-secondary">Cancel</a>
-            </form>
+                            <!-- Confirm Password Field -->
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                                <div class="input-group">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('password_confirmation')
+                                    <div class="text-danger text-sm">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary">Perbarui Admin</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 @endsection
 
+@section('scripts')
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+    @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}",
+            showConfirmButton: true,
+            timer: 3000
+        });
+    </script>
+    @endif
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
+    @if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "{{ session('error') }}",
+            showConfirmButton: true,
+            timer: 3000
+        });
+    </script>
+    @endif
+@endsection

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Login;  // Menggunakan model Login
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -25,14 +27,13 @@ class AdminController extends Controller
         // Menyimpan data administrator dengan status 0 (inactive) saat pembuatan akun
         Login::create([
             'username' => $validated['username'],
-            'password' => $validated['password'],
+            'password' => Hash::make($validated['password']), // Make sure password is hashed
             'status' => 0,  // Status 0 berarti tidak aktif
         ]);
 
         // Mengarahkan kembali dengan pesan sukses
         return redirect()->route('radcheck.active')->with('success', 'Administrator created successfully!');
     }
-
 
     // Menampilkan administrator (baik aktif maupun tidak aktif)
     public function active(Request $request)
@@ -44,29 +45,39 @@ class AdminController extends Controller
         return view('radcheck.active', compact('active'));
     }
 
-
-    public function editPassword($id)
+    // Menampilkan form untuk mengedit admin
+    public function editAdmin($id)
     {
-        $admin = Login::findOrFail($id);
+        $admin = Login::findOrFail($id); // Mengambil data admin berdasarkan ID
         return view('radcheck.editadmin', compact('admin'));
     }
 
-    public function changePassword(Request $request, $id)
+    // Proses update data admin
+    public function updateAdmin(Request $request, $id)
     {
         // Validasi input
-        $request->validate([
-            'new_password' => 'required|min:6|confirmed',
+        $validated = $request->validate([
+            'username' => 'required|unique:login,username,' . $id,  // Pastikan username unik kecuali admin yang sama
+            'password' => 'nullable|min:6|confirmed',  // Validasi password jika ada perubahan
         ]);
 
+        // Ambil admin berdasarkan ID
         $admin = Login::findOrFail($id);
-        $admin->password = bcrypt($request->new_password);
+
+        // Update username
+        $admin->username = $validated['username'];
+
+        // Jika password diubah
+        if ($request->has('password') && !empty($request->password)) {
+            $admin->password = ($validated['password']);  // Hash password baru
+        }
+
+        
+        
+        // Simpan perubahan
         $admin->save();
 
-        return redirect()->route('admin.edit_password', ['id' => $id])
-                        ->with('success', 'Password successfully updated.');
+        // Redirect kembali ke halaman edit dengan pesan sukses
+        return redirect()->route('radcheck.active', ['id' => $id])->with('success', 'Admin updated successfully');
     }
-
-
-
-
 }

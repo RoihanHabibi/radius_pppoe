@@ -36,9 +36,9 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ url('radcheck/editadmin', ['id' => $admin->id]) }}" class="btn btn-warning btn-sm">
-                                                <i class="fa fa-key"></i> Change Password
-                                            </a>
+                                        <a href="{{ route('radcheck.radcheck.editadmin', ['id' => $admin->id]) }}" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-key"></i> Change Password
+                                        </a>
                                         </td>
                                     </tr>
                                 @endforeach

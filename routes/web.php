@@ -28,7 +28,7 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::delete('/{id}', [RadcheckController::class, 'destroy'])->name('destroy'); // Menghapus pengguna
     Route::post('{id}/update_status', [RadcheckController::class, 'update_status'])->name('update_status'); // Memperbarui status pengguna
     Route::patch('{id}/used', [RadcheckController::class, 'markAsUsed'])->name('markAsUsed'); // Menandai pengguna sebagai digunakan
-    Route::post('{id}/change_password', [RadcheckController::class, 'change_password'])->name('change_password'); // Mengubah password pengguna
+    Route::post('/radcheck/{id}/change-password', [RadcheckController::class, 'changePassword'])->name('change_password'); // Mengubah password pengguna
 
     Route::get('/dashboard', [RadcheckController::class, 'dashboard'])->name('dashboard');
     Route::get('/tambah_user', [RadcheckController::class, 'create'])->name('create_user');
@@ -71,7 +71,10 @@ Route::prefix('radcheck')->name('radcheck.')->group(function () {
     Route::get('/admin', [AdminController::class, 'create'])->name('admin'); // Form untuk create admin
     Route::post('/admin', [AdminController::class, 'store'])->name('admin.store'); // Menyimpan admin baru
 
-    Route::get('/radcheck/editadmin/{id}', [AdminController::class, 'editPassword'])->name('admin.edit_password');
-    Route::post('/radcheck/editadmin/{id}/change-password', [AdminController::class, 'changePassword'])->name('admin.change_password');
+    //view editadmin
+    Route::get('/radcheck/editadmin/{id}', [AdminController::class, 'editAdmin'])->name('radcheck.editadmin');
+
+    // Route to handle the form submission for updating the admin
+    Route::put('/update-admin/{id}', [AdminController::class, 'updateAdmin'])->name('update-admin');
 
 });
